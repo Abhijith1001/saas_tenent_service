@@ -15,16 +15,15 @@ dotenv.config({ path: path.join(__dirname, "../.env") });
 const app = express();
 app.use(express.json());
 
-app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  next();
-});
+const corsOptions = {
+  origin: ["http://localhost:5173", "https://saas-tenent-service.onrender.com","*"],
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  credentials: true,
+};
 
-
-app.use(cors());
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 if (!process.env.TENANT_REGISTRY_URI) {
   console.error("TENANT_REGISTRY_URI is not set. Check your .env file.");
